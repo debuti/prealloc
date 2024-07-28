@@ -1,0 +1,7 @@
+{
+    "buffers": [
+        {"name": "Item1", "size": 10},
+        {"name": "Item2", "size": 20},
+        {"name": "Item3", "size": 30}
+    ]
+}
