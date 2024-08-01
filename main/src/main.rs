@@ -1,4 +1,5 @@
 // use config_macro::load_config;
+#![feature(concat_idents)]
 
 // load_config!("config.json");
 
@@ -17,14 +18,16 @@ pub enum OtherItem {
 }
 
 fn main() {
-    // for item in BUFFERS.iter() {
-    //     println!("{:?}", item);
-    // }
-
-    if let Some(item) = get_and_init_static!("Item1", MyItem {a: 1, b: 2}) {
+    if let Some(item) = dispatch_static!(Item1, MyItem { a: 1, b: 2 }) {
         println!("Retrieved: {:?}", item);
     } else {
         println!("Item1 already dispatched");
+    }
+
+    if let Some(item) = dispatch_static!(Item2, OtherItem::L(33)) {
+        println!("Retrieved: {:?}", item);
+    } else {
+        println!("Item2 already dispatched");
     }
 }
 
@@ -35,25 +38,40 @@ const CRATE_MYITEM_DEFAULT: (bool, MaybeUninit<crate::MyItem>) = (false, MaybeUn
 pub static ITEM1_MEMORY: Mutex<[(bool, MaybeUninit<crate::MyItem>); 3usize]> =
     Mutex::new([CRATE_MYITEM_DEFAULT; 3usize]);
 
-#[macro_export]
-macro_rules! get_and_init_static {
-    ($name:expr, $init:expr) => {
-        match ($name) {
-            "Item1" => {
-                let mut result = None;
-                let mut lock = ITEM1_MEMORY.lock().unwrap();
-                for item in lock.iter_mut() {
-                    if !item.0 {
-                        item.0 = true;
-                        let reference =  unsafe { &mut *(&mut item.1 as *const _ as *mut MaybeUninit<MyItem>) };
-                        reference.write($init);
-                        result = Some(unsafe{reference.assume_init_mut()}); 
-                        break;
-                    }
-                }
-                result
-            },
-            _ => None,
+const CRATE_OTHERITEM_DEFAULT: (bool, MaybeUninit<crate::OtherItem>) =
+    (false, MaybeUninit::uninit());
+pub static ITEM2_MEMORY: Mutex<[(bool, MaybeUninit<crate::OtherItem>); 3usize]> =
+    Mutex::new([CRATE_OTHERITEM_DEFAULT; 3usize]);
+
+fn dispatch_Item1(init: MyItem) -> Option<&'static mut MyItem> {
+    let mut lock = ITEM1_MEMORY.lock().unwrap();
+    for item in lock.iter_mut() {
+        if !item.0 {
+            item.0 = true;
+            let reference =
+                unsafe { &mut *(&mut item.1 as *const _ as *mut std::mem::MaybeUninit<MyItem>) };
+            return Some(reference.write(init));
         }
+    }
+    None
+}
+
+fn dispatch_Item2(init: OtherItem) -> Option<&'static mut OtherItem> {
+    let mut lock = ITEM2_MEMORY.lock().unwrap();
+    for item in lock.iter_mut() {
+        if !item.0 {
+            item.0 = true;
+            let reference =
+                unsafe { &mut *(&mut item.1 as *const _ as *mut std::mem::MaybeUninit<OtherItem>) };
+            return Some(reference.write(init));
+        }
+    }
+    None
+}
+
+#[macro_export]
+macro_rules! dispatch_static {
+    ($name:ident, $init:expr) => {
+        concat_idents!(dispatch, _, $name)($init)
     };
 }
