@@ -6,14 +6,15 @@ use serde::Deserialize;
 use syn::{parse_macro_input, LitStr};
 
 #[derive(Deserialize, Debug)]
-struct BufferDef {
+struct ConfigItem {
     name: String,
+    r#type: String,
     size: usize,
 }
 
 #[derive(Deserialize, Debug)]
 struct Config {
-    buffers: Vec<BufferDef>,
+    buffers: Vec<ConfigItem>,
 }
 
 #[proc_macro]
@@ -27,39 +28,23 @@ pub fn load_config(input: TokenStream) -> TokenStream {
 
     // Create an iterator of TokenStreams, one item per item in config
     let buffer_data = config.buffers.iter().map(|item| {
-        let name = &item.name;
-        let name: proc_macro2::TokenStream = name.parse().unwrap();
+        let name: proc_macro2::TokenStream = format!("{}_{}", &item.name, "memory").parse().unwrap();
+        let ty: syn::Type = syn::parse_str(&item.r#type).expect("Invalid type");
+        let ty_def: proc_macro2::TokenStream = format!("{}_{}", &item.r#type, "default").replace("::", "_").parse().unwrap();
         let size = item.size;
-        let u8_default = u8::default();
         let item = quote! {
-            pub static #name: [u8; #size] = [#u8_default; #size];
+            const #ty_def: MaybeUninit<#ty> = MaybeUninit::uninit();
+            pub static #name: [MaybeUninit<#ty>; #size] = [#ty_def; #size];
         };
         println!("Generated item: {}", item);
         item
     });
-    let buffers = config.buffers.iter().map(|item| {
-        let name_str = &item.name;
-        let name: proc_macro2::TokenStream = name_str.parse().unwrap();
-        let item = quote! {
-            Buffer { name: #name_str, value: &#name }
-        };
-        println!("Generated item: {}", item);
-        item
-    });
-
+    
     // Generate the final source block
     let expanded = quote! {
-        #[derive(Debug)]
-        pub struct Buffer {
-            pub name: &'static str,
-            pub value: &'static [u8],
-        }
-
+        use core::mem::MaybeUninit;
+        
         #(#buffer_data)*
-
-        pub static BUFFERS: &[Buffer] = &[
-            #(#buffers),*
-        ];
     };
 
     println!("Generated code:\n{}", expanded);
