@@ -1,7 +1,8 @@
 // use config_macro::load_config;
-#![feature(concat_idents)]
 
 // load_config!("config.json");
+use paste::paste;
+
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -43,7 +44,7 @@ const CRATE_OTHERITEM_DEFAULT: (bool, MaybeUninit<crate::OtherItem>) =
 pub static ITEM2_MEMORY: Mutex<[(bool, MaybeUninit<crate::OtherItem>); 3usize]> =
     Mutex::new([CRATE_OTHERITEM_DEFAULT; 3usize]);
 
-fn dispatch_Item1(init: MyItem) -> Option<&'static mut MyItem> {
+fn dispatch_item1(init: MyItem) -> Option<&'static mut MyItem> {
     let mut lock = ITEM1_MEMORY.lock().unwrap();
     for item in lock.iter_mut() {
         if !item.0 {
@@ -56,7 +57,7 @@ fn dispatch_Item1(init: MyItem) -> Option<&'static mut MyItem> {
     None
 }
 
-fn dispatch_Item2(init: OtherItem) -> Option<&'static mut OtherItem> {
+fn dispatch_item2(init: OtherItem) -> Option<&'static mut OtherItem> {
     let mut lock = ITEM2_MEMORY.lock().unwrap();
     for item in lock.iter_mut() {
         if !item.0 {
@@ -72,6 +73,6 @@ fn dispatch_Item2(init: OtherItem) -> Option<&'static mut OtherItem> {
 #[macro_export]
 macro_rules! dispatch_static {
     ($name:ident, $init:expr) => {
-        concat_idents!(dispatch, _, $name)($init)
+        paste! {[<dispatch _ $name:lower>]($init)}
     };
 }
