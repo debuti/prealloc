@@ -7,6 +7,7 @@ name = "config_macro"
 version = "0.1.0"
 dependencies = [
  "config_macro_derive",
+ "paste",
 ]
 
 [[package]]
@@ -31,7 +32,6 @@ name = "main"
 version = "0.1.0"
 dependencies = [
  "config_macro",
- "paste",
 ]
 
 [[package]]
