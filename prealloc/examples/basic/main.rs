@@ -1,6 +1,6 @@
 use prealloc::prealloc_from_config;
 
-prealloc_from_config!("examples/basic/config.json");
+prealloc_from_config!("prealloc/examples/basic/config.json");
 
 #[derive(Debug, PartialEq)]
 #[allow(dead_code)]

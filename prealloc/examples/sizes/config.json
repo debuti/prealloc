@@ -1,9 +1,7 @@
-{
-    "buffers": [
-        {
-            "name": "Anchor",
-            "type": "crate::MyStruct",
-            "size": 2
-        }
-    ]
-}
+[
+    {
+        "name": "Anchor",
+        "type": "crate::MyStruct",
+        "size": 2
+    }
+]

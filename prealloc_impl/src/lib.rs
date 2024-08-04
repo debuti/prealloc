@@ -12,14 +12,9 @@ struct ConfigItem {
     size: usize,
 }
 
-#[derive(Deserialize, Debug)]
-struct Config {
-    buffers: Vec<ConfigItem>,
-}
-
 #[proc_macro]
 pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
-    let config: Config = {
+    let config: Vec<ConfigItem> = {
         let input = parse_macro_input!(input as LitStr);
         let config_path = input.value();
         let config_data =
@@ -27,7 +22,7 @@ pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
         serde_json::from_str(&config_data).expect("Invalid JSON format")
     };
 
-    let memories = config.buffers.iter().map(|item| {
+    let memories = config.iter().map(|item| {
         let name: proc_macro2::TokenStream = format!("{}_MEMORY", &item.name.to_uppercase())
             .parse()
             .unwrap();
@@ -43,7 +38,7 @@ pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
         }
     });
 
-    let dispatchers = config.buffers.iter().map(|item| {
+    let dispatchers = config.iter().map(|item| {
         let name: proc_macro2::TokenStream = format!("{}", &item.name).parse().unwrap();
         let ty: syn::Type = syn::parse_str(&item.r#type).expect("Invalid type");
         quote! {
@@ -89,8 +84,6 @@ pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
         }
 
     };
-
-    // println!("Generated code:\n{}", expanded);
 
     TokenStream::from(expanded)
 }

@@ -3,11 +3,15 @@ name = "prealloc"
 version = "0.1.0"
 authors = ["Borja García <debuti@gmail.com>"]
 categories = ["development-tools"]
+#categories = ["development-tools", "no-std", "no-std::no-alloc"]
 description = "Build time heap-like preallocation."
 edition = "2021"
 keywords = ["macros"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
+
+[lib]
+path = "src/lib.rs"
 
 [dependencies]
 prealloc_impl = { path = "../prealloc_impl" }

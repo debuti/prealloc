@@ -1,5 +1,5 @@
 
-prealloc::prealloc_from_config!("examples/sizes/config.json");
+prealloc::prealloc_from_config!("prealloc/examples/sizes/config.json");
 
 #[derive(Debug, PartialEq)]
 pub struct MyStruct {

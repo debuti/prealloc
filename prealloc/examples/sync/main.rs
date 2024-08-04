@@ -1,6 +1,6 @@
 use std::thread;
 
-prealloc::prealloc_from_config!("examples/sync/config.json");
+prealloc::prealloc_from_config!("prealloc/examples/sync/config.json");
 
 type MyType = u8;
 
