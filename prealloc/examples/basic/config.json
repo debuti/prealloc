@@ -1,0 +1,14 @@
+{
+    "buffers": [
+        {
+            "name": "Item1",
+            "type": "crate::MyItem",
+            "size": 3
+        },
+        {
+            "name": "Item2",
+            "type": "crate::OtherItem",
+            "size": 10
+        }
+    ]
+}

@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-config_macro = { path = "../config_macro" }
+prealloc = { path = "../prealloc" }

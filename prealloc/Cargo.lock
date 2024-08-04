@@ -3,25 +3,6 @@
 version = 3
 
 [[package]]
-name = "config_macro"
-version = "0.1.0"
-dependencies = [
- "config_macro_derive",
- "paste",
-]
-
-[[package]]
-name = "config_macro_derive"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "serde",
- "serde_json",
- "syn 1.0.109",
-]
-
-[[package]]
 name = "itoa"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -32,6 +13,25 @@ name = "paste"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
+
+[[package]]
+name = "prealloc"
+version = "0.1.0"
+dependencies = [
+ "paste",
+ "prealloc_impl",
+]
+
+[[package]]
+name = "prealloc_impl"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_json",
+ "syn 1.0.109",
+]
 
 [[package]]
 name = "proc-macro2"

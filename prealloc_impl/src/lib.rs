@@ -18,7 +18,7 @@ struct Config {
 }
 
 #[proc_macro]
-pub fn load_config(input: TokenStream) -> TokenStream {
+pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
     let config: Config = {
         let input = parse_macro_input!(input as LitStr);
         let config_path = input.value();
@@ -55,7 +55,7 @@ pub fn load_config(input: TokenStream) -> TokenStream {
         use core::mem::MaybeUninit;
         // FIXME: Only if !no_std
         use std::sync::Mutex;
-        use config_macro::paste;
+        use prealloc::paste;
 
         #(#memories)*
 
