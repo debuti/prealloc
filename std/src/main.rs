@@ -23,20 +23,20 @@ impl Drop for OtherItem {
 }
 
 fn main() {
-    // const ITEM1_INITIALIZER: MyItem = MyItem { a: 1, b: 2 };
-    // assert_eq!(
-    //     dispatch_static!(Item1, ITEM1_INITIALIZER),
-    //     Some(&mut MyItem { a: 1, b: 2 })
-    // );
-    // assert_eq!(
-    //     dispatch_static!(Item1, ITEM1_INITIALIZER),
-    //     Some(&mut MyItem { a: 1, b: 2 })
-    // );
-    // assert_eq!(
-    //     dispatch_static!(Item1, ITEM1_INITIALIZER),
-    //     Some(&mut MyItem { a: 1, b: 2 })
-    // );
-    // assert_eq!(dispatch_static!(Item1, ITEM1_INITIALIZER), None);
+    const ITEM1_INITIALIZER: MyItem = MyItem { a: 1, b: 2 };
+    assert_eq!(
+        dispatch_static!(Item1, ITEM1_INITIALIZER),
+        Some(&mut MyItem { a: 1, b: 2 })
+    );
+    assert_eq!(
+        dispatch_static!(Item1, ITEM1_INITIALIZER),
+        Some(&mut MyItem { a: 1, b: 2 })
+    );
+    assert_eq!(
+        dispatch_static!(Item1, ITEM1_INITIALIZER),
+        Some(&mut MyItem { a: 1, b: 2 })
+    );
+    assert_eq!(dispatch_static!(Item1, ITEM1_INITIALIZER), None);
 
     for idx in 0..51 {
         if let Some(item) = dispatch_static!(Item2, OtherItem::L(33)) {

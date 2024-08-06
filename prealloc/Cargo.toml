@@ -18,3 +18,10 @@ prealloc_impl = { path = "../prealloc_impl" }
 
 # MIT OR Apache-2.0
 paste="1.0.15"
+
+# MIT
+spin = "0.9.8"
+
+[features]
+default = ["std"]
+std = ["prealloc_impl/std"]

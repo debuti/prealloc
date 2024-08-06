@@ -39,19 +39,38 @@ pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
     });
 
     let dispatchers = config.iter().map(|item| {
-        let name: proc_macro2::TokenStream = format!("{}", &item.name).parse().unwrap();
+        let name: proc_macro2::TokenStream = item.name.parse().unwrap();
         let ty: syn::Type = syn::parse_str(&item.r#type).expect("Invalid type");
         quote! {
             _dispatch_impl!{#name, #ty}
         }
     });
 
+    #[cfg(feature = "std")]
+    let vincludes = quote! {
+        use std::sync::Mutex;
+    };
+
+    #[cfg(not(feature = "std"))]
+    let vincludes = quote! {
+        use prealloc::Mutex;
+    };
+
+    #[cfg(feature = "std")]
+    let lock = quote! {
+        let mut lock = [<$name:upper _MEMORY>].lock().unwrap();
+    };
+
+    #[cfg(not(feature = "std"))]
+    let lock = quote! {
+        let mut lock = [<$name:upper _MEMORY>].lock();
+    };
+
     let expanded = quote! {
         use core::mem::MaybeUninit;
-        // FIXME: Only if !no_std
-        use std::sync::Mutex;
         use prealloc::paste;
-
+        #vincludes
+        
         #(#memories)*
 
         #[macro_export]
@@ -59,12 +78,12 @@ pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
             ($name:ident, $type:ty) => {
                 paste!{
                     fn [<dispatch_ $name:lower>](init: $type) -> Option<&'static mut $type> {
-                        let mut lock = [<$name:upper _MEMORY>].lock().unwrap();
+                        #lock
                         for item in lock.iter_mut() {
                             if !item.0 {
                                 item.0 = true;
                                 let reference =
-                                    unsafe { &mut *(&mut item.1 as *const _ as *mut std::mem::MaybeUninit<$type>) };
+                                    unsafe { &mut *(&mut item.1 as *const _ as *mut core::mem::MaybeUninit<$type>) };
                                 return Some(reference.write(init));
                             }
                         }

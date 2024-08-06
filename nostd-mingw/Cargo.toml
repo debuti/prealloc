@@ -1,0 +1,16 @@
+[package]
+name = "nostd-mingw"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+prealloc = { path = "../prealloc", default-features = false }
+libc-print = "0.1.19"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+[workspace]

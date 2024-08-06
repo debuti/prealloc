@@ -1,0 +1,20 @@
+[package]
+name = "nostd-msvc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+prealloc = { path = "../prealloc", default-features = false }
+windows-sys = { version = "0.52.0", features = [
+	"Win32_Foundation",
+	"Win32_System_Threading", 
+	"Win32_System_Console", 
+] }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+[workspace]
