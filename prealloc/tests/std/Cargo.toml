@@ -1,0 +1,11 @@
+[package]
+name = "std"
+version = "0.0.0"
+authors = ["Borja García <debuti@gmail.com>"]
+edition = "2021"
+publish = false
+
+[dependencies]
+prealloc = { path = "../.." }
+
+[workspace]
