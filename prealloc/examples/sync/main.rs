@@ -12,7 +12,7 @@ fn main() {
             *myvar += 10;
         });
     });
-    
+
     *myvar += 10;
 
     println!("{myvar}");

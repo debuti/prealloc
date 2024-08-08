@@ -70,7 +70,7 @@ pub fn prealloc_from_config(input: TokenStream) -> TokenStream {
         use core::mem::MaybeUninit;
         use prealloc::paste;
         #vincludes
-        
+
         #(#memories)*
 
         #[macro_export]

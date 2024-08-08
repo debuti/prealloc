@@ -3,5 +3,6 @@
 pub use prealloc_impl::prealloc_from_config;
 // Re-export the macros
 pub use paste::*;
-#[cfg(not(feature = "std"))] 
+
+#[cfg(not(feature = "std"))]
 pub use spin::*;

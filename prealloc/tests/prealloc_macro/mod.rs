@@ -23,19 +23,19 @@ mod tests {
         } else {
             panic!("Item1 bucket shouldnt be depleted yet");
         }
-        
+
         if let Some(item) = dispatch_static!(Item1, TestItem { a: 3, b: 4 }) {
             assert_eq!(item, &mut TestItem { a: 3, b: 4 });
         } else {
             panic!("Item1 bucket shouldnt be depleted yet");
         }
-        
+
         if let Some(item) = dispatch_static!(Item1, TestItem { a: 5, b: 6 }) {
             assert_eq!(item, &mut TestItem { a: 5, b: 6 });
         } else {
             panic!("Item1 bucket shouldnt be depleted yet");
         }
-        
+
         if let Some(_) = dispatch_static!(Item1, TestItem { a: 1, b: 2 }) {
             panic!("Item1 bucket should be depleted")
         }
@@ -52,7 +52,7 @@ mod tests {
                 }
             } else {
                 panic!("Item2 bucket shouldnt be depleted yet");
-            }    
+            }
         }
 
         if let Some(_) = dispatch_static!(Item2, OtherItem::R) {
