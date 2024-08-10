@@ -2,11 +2,12 @@
 name = "prealloc_impl"
 version = "0.1.0"
 authors = ["Borja García <debuti@gmail.com>"]
-categories = ["development-tools"]
-description = "."
+categories = ["development-tools", "no-std", "no-std::no-alloc"]
+description = "Build time heap-like memory preallocation."
 edition = "2021"
 keywords = ["macros"]
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/debuti/prealloc"
 
 [lib]
 proc-macro = true
